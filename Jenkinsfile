@@ -15,11 +15,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                bat 'dotnet build --configuration Release'
-            }
-        }
+       stage('Docker Build') {
+         steps {
+          bat 'docker build -t mywebapp:latest .'
+       }
+   }
+
 
         stage('Test') {
             steps {
