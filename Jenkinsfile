@@ -15,12 +15,11 @@ pipeline {
             }
         }
 
-       stage('Docker Build') {
-         steps {
-          bat 'docker build -t mywebapp:latest .'
-       }
-   }
-
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t mywebapp:latest .'
+            }
+        }
 
         stage('Test') {
             steps {
@@ -29,12 +28,10 @@ pipeline {
         }
 
         stage('Publish') {
-              steps {
-               bat 'dotnet publish -c Release -o out'
-                 archiveArtifacts artifacts: 'out/**', fingerprint: true
-    }
-}
-
+            steps {
+                bat 'dotnet publish -c Release -o out'
+                archiveArtifacts artifacts: 'out/**', fingerprint: true
+            }
         }
     }
 }
