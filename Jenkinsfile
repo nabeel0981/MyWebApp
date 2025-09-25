@@ -28,9 +28,12 @@ pipeline {
         }
 
         stage('Publish') {
-            steps {
-                bat 'dotnet publish -c Release -o out'
-            }
+              steps {
+               bat 'dotnet publish -c Release -o out'
+                 archiveArtifacts artifacts: 'out/**', fingerprint: true
+    }
+}
+
         }
     }
 }
