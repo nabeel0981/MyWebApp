@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "mywebapp:latest"
         CONTAINER_NAME = "mywebappcontainer"
-        HOST_PORT = "5050"
+        HOST_PORT = "6060"
         CONTAINER_PORT = "80"
     }
 
