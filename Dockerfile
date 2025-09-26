@@ -17,11 +17,9 @@ WORKDIR /app
 # Copy the published app from the build stage
 COPY --from=build /app/publish ./
 
-# Make the app listen on port 8080
-ENV ASPNETCORE_URLS=http://+:8080
-
-# Expose port
-EXPOSE 8080
+# Make the app listen on port 80
+ENV ASPNETCORE_URLS=http://+:80
+EXPOSE 80
 
 # Start the app
 ENTRYPOINT ["dotnet", "MyWebApp.dll"]
