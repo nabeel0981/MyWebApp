@@ -11,26 +11,29 @@ pipeline {
 
         stage('Restore Dependencies') {
             steps {
-                bat 'dotnet restore'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                bat 'docker build -t mywebapp:latest .'
+                sh 'dotnet restore'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'dotnet test'
+                sh 'dotnet test'
             }
         }
 
-        stage('Publish') {
+        stage('Docker Build') {
             steps {
-                bat 'dotnet publish -c Release -o out'
-                archiveArtifacts artifacts: 'out/**', fingerprint: true
+                sh 'docker build -t mywebapp:latest .'
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                    docker stop mywebapp || true
+                    docker rm mywebapp || true
+                    docker run -d -p 5000:80 --name mywebapp mywebapp:latest
+                '''
             }
         }
     }
