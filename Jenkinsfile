@@ -11,19 +11,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Clean workspace to prevent Git lock issues
+                deleteDir()
                 git branch: 'main',
                     url: 'https://github.com/nabeel0981/MyWebApp.git'
             }
         }
 
-        stage('Restore Dependencies') {
+        stage('Restore & Build') {
             steps {
                 sh 'dotnet restore'
-            }
-        }
-
-        stage('Build') {
-            steps {
                 sh 'dotnet build -c Release'
             }
         }
@@ -49,19 +46,19 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-                // Stop and remove old container if exists
+                // Stop & remove previous container if exists
                 sh "docker stop ${CONTAINER_NAME} || true"
                 sh "docker rm ${CONTAINER_NAME} || true"
 
-                // Run the new container
-                sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                // Run new container with correct port
+                sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} -e ASPNETCORE_URLS=http://+:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
             }
         }
     }
 
     post {
         success {
-            echo "✅ Build and deployment successful!"
+            echo "✅ Build and deployment successful! Access your app at http://localhost:${HOST_PORT}"
         }
         failure {
             echo "❌ Something went wrong, check the logs."
