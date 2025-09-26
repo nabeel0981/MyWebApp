@@ -6,16 +6,16 @@ WORKDIR /src
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copy the rest of the source code and publish
+# Copy all source code and publish
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish
 
-# Stage 2: Create the runtime image
+# Stage 2: Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
-# Copy the published app from the build stage
-COPY --from=build /app/publish ./
+# Copy published files into /app root
+COPY --from=build /app/publish/. ./
 
 # Make the app listen on port 80
 ENV ASPNETCORE_URLS=http://+:80
